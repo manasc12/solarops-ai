@@ -21,7 +21,7 @@ from backend.app.models.schemas import (
     RCAResult,
     SolarForecast,
 )
-
+from pprint import pprint
 _CONFIG_PATH = Path("configs/app_config.yaml")
 
 
@@ -37,6 +37,7 @@ class FarmRepository:
         if not _CONFIG_PATH.exists():
             return
         data = yaml.safe_load(_CONFIG_PATH.read_text(encoding="utf-8")) or {}
+        pprint(data)
         for entry in data.get("farms", []):
             farm = FarmMetadata(**entry)
             self._store.put(tables.FARMS, farm.farm_id, farm)
@@ -133,3 +134,23 @@ class ReportRepository:
 
     def get(self, farm_id: str) -> str | None:
         return self._store.get(tables.REPORTS, farm_id)
+
+if __name__ == "__main__":
+    # Quick test to verify repositories can be instantiated and used.
+    farm_repo = FarmRepository()
+    forecast_repo = ForecastRepository()
+    anomaly_repo = AnomalyRepository()
+    observation_repo = ObservationRepository()
+    rca_repo = RCARepository()
+    approval_repo = ApprovalRepository()
+    report_repo = ReportRepository()
+    
+
+    pprint("Repositories initialized successfully.")
+    # print("Farms:", farm_repo.list())
+    # print("Sample forecast:", forecast_repo.get("farm_1"))
+    # print("Sample anomaly:", anomaly_repo.get("farm_1"))
+    # print("Sample observation:", observation_repo.get("farm_1"))
+    # print("Sample RCA result:", rca_repo.get("farm_1"))
+    # print("Sample approval requests:", approval_repo.list_requests())
+    # print("report report:", report_repo.get("farm_1"))
