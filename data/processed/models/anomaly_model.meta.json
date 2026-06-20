@@ -1,0 +1,10 @@
+{
+  "method": "IsolationForest",
+  "trained_at": "2026-06-18T13:32:28.901562+00:00",
+  "n_samples": 660,
+  "features": [
+    "deviation_signed",
+    "abs_deviation",
+    "inverter_code"
+  ]
+}

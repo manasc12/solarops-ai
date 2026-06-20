@@ -1,0 +1,33 @@
+{"timestamp": "2026-06-18T13:32:44.861635+00:00", "level": "INFO", "logger": "api.main", "message": "api_startup", "app": "SolarOps AI", "env": "development"}
+INFO:     Started server process [5544]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+{"timestamp": "2026-06-18T13:33:00.587233+00:00", "level": "INFO", "logger": "services.anomaly", "message": "anomaly_detected", "farm_id": "FARM_001", "anomaly_score": 0.0283, "severity": "LOW", "deviation_pct": 0.306}
+INFO:     127.0.0.1:63550 - "POST /api/v1/anomaly HTTP/1.1" 200 OK
+{"timestamp": "2026-06-18T13:33:00.634188+00:00", "level": "INFO", "logger": "services.anomaly", "message": "anomaly_detected", "farm_id": "FARM_002", "anomaly_score": 0.8836, "severity": "HIGH", "deviation_pct": 33.305}
+INFO:     127.0.0.1:57898 - "POST /api/v1/anomaly HTTP/1.1" 200 OK
+{"timestamp": "2026-06-18T13:33:00.649772+00:00", "level": "INFO", "logger": "services.anomaly", "message": "anomaly_detected", "farm_id": "FARM_003", "anomaly_score": 0.0334, "severity": "LOW", "deviation_pct": -3.254}
+INFO:     127.0.0.1:57899 - "POST /api/v1/anomaly HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59607 - "GET /api/v1/health HTTP/1.1" 200 OK
+{"timestamp": "2026-06-18T13:41:38.776986+00:00", "level": "INFO", "logger": "orchestrator.graph", "message": "pipeline_run_langgraph", "farm_id": "FARM_002"}
+{"timestamp": "2026-06-18T13:41:38.792579+00:00", "level": "INFO", "logger": "agents.weather", "message": "weather_agent_done", "farm_id": "FARM_002", "cloud_impact": 0.206, "temp_stress": 0.0, "wind_risk": "LOW", "irradiance_quality": "MODERATE"}
+{"timestamp": "2026-06-18T13:41:40.195688+00:00", "level": "INFO", "logger": "services.forecast", "message": "forecast_generated", "farm_id": "FARM_002", "predicted_kwh": 25527.103, "horizon_hours": 24}
+{"timestamp": "2026-06-18T13:41:40.195688+00:00", "level": "INFO", "logger": "agents.forecast", "message": "forecast_agent_done", "farm_id": "FARM_002", "predicted_kwh": 25527.103}
+{"timestamp": "2026-06-18T13:41:40.211313+00:00", "level": "INFO", "logger": "services.anomaly", "message": "anomaly_detected", "farm_id": "FARM_002", "anomaly_score": 0.8836, "severity": "HIGH", "deviation_pct": 33.305}
+{"timestamp": "2026-06-18T13:41:40.211313+00:00", "level": "INFO", "logger": "agents.anomaly", "message": "anomaly_agent_done", "farm_id": "FARM_002", "score": 0.8836, "severity": "HIGH"}
+{"timestamp": "2026-06-18T13:41:40.226943+00:00", "level": "INFO", "logger": "agents.rca", "message": "rca_agent_done", "farm_id": "FARM_002", "top_cause": "Inverter degradation / partial string underperformance"}
+{"timestamp": "2026-06-18T13:41:40.226943+00:00", "level": "INFO", "logger": "services.report", "message": "report_generated", "farm_id": "FARM_002"}
+{"timestamp": "2026-06-18T13:41:40.226943+00:00", "level": "INFO", "logger": "services.approval", "message": "approval_submitted", "request_id": "appr_76526da216bf", "farm_id": "FARM_002", "severity": "HIGH"}
+{"timestamp": "2026-06-18T13:41:40.226943+00:00", "level": "INFO", "logger": "agents.hitl", "message": "hitl_gate_opened", "farm_id": "FARM_002", "request_id": "appr_76526da216bf"}
+INFO:     127.0.0.1:59608 - "POST /api/v1/pipeline/run HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59609 - "GET /api/v1/approvals HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59610 - "POST /api/v1/approvals/decision HTTP/1.1" 422 Unprocessable Entity
+INFO:     127.0.0.1:59611 - "GET /api/v1/approvals HTTP/1.1" 200 OK
+{"timestamp": "2026-06-18T13:41:54.923458+00:00", "level": "INFO", "logger": "services.approval", "message": "approval_decided", "request_id": "appr_76526da216bf", "decision": "APPROVED", "reviewer": "ops_lead"}
+INFO:     127.0.0.1:59612 - "POST /api/v1/approvals/decision HTTP/1.1" 200 OK
+{"timestamp": "2026-06-18T13:41:54.935562+00:00", "level": "INFO", "logger": "rag.retriever", "message": "rag_index_loaded", "n_chunks": 3}
+{"timestamp": "2026-06-18T13:41:54.935562+00:00", "level": "INFO", "logger": "rag.chain", "message": "rag_answered", "query": "How do I respond to an inverter failure?", "n_chunks": 3, "confidence": 0.275}
+INFO:     127.0.0.1:59613 - "POST /api/v1/rag/query HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59614 - "GET /api/v1/approvals HTTP/1.1" 200 OK
+INFO:     127.0.0.1:59615 - "GET /api/v1/approvals/all HTTP/1.1" 200 OK

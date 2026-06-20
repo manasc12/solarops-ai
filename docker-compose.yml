@@ -1,0 +1,47 @@
+# SolarOps AI — local orchestration of the full stack.
+# Backend (FastAPI), Frontend (Streamlit), and an nginx reverse proxy.
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: infra/docker/backend.Dockerfile
+    image: solarops/backend:latest
+    environment:
+      - APP_ENV=production
+      - LLM_USE_MOCK=true
+      - WEATHER_USE_MOCK=true
+    ports:
+      - "8000:8000"
+    volumes:
+      - solarops_data:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+
+  streamlit:
+    build:
+      context: .
+      dockerfile: infra/docker/streamlit.Dockerfile
+    image: solarops/streamlit:latest
+    environment:
+      - BACKEND_URL=http://backend:8000
+    ports:
+      - "8501:8501"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  nginx:
+    image: nginx:1.27-alpine
+    volumes:
+      - ./infra/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - streamlit
+
+volumes:
+  solarops_data:

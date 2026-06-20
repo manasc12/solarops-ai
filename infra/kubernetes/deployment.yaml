@@ -1,0 +1,91 @@
+# SolarOps AI — Kubernetes reference manifests
+#
+# Minimal, illustrative deployment of the backend and frontend. This is a
+# starting point for a cluster deployment, not a production-hardened manifest
+# (add resource requests/limits, probes, secrets, and ingress TLS for prod).
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solarops-backend
+  labels:
+    app: solarops
+    component: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solarops
+      component: backend
+  template:
+    metadata:
+      labels:
+        app: solarops
+        component: backend
+    spec:
+      containers:
+        - name: backend
+          image: solarops/backend:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: APP_ENV
+              value: "production"
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: solarops-backend
+spec:
+  selector:
+    app: solarops
+    component: backend
+  ports:
+    - port: 8000
+      targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: solarops-streamlit
+  labels:
+    app: solarops
+    component: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: solarops
+      component: frontend
+  template:
+    metadata:
+      labels:
+        app: solarops
+        component: frontend
+    spec:
+      containers:
+        - name: streamlit
+          image: solarops/streamlit:latest
+          ports:
+            - containerPort: 8501
+          env:
+            - name: BACKEND_URL
+              value: "http://solarops-backend:8000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: solarops-streamlit
+spec:
+  selector:
+    app: solarops
+    component: frontend
+  ports:
+    - port: 8501
+      targetPort: 8501

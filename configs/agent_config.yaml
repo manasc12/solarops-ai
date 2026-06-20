@@ -1,0 +1,20 @@
+# SolarOps AI – Agent configuration
+orchestrator:
+  rca_trigger_threshold: 0.6
+  hitl_severity_trigger: HIGH
+
+agents:
+  weather_agent:
+    id: weather-agent
+  forecasting_agent:
+    id: forecasting-agent
+  anomaly_agent:
+    id: anomaly-agent
+  rca_agent:
+    id: rca-agent
+    use_llm: false            # falls back to deterministic reasoning when false / no key
+
+rag:
+  top_k: 4
+  chunk_size: 600
+  chunk_overlap: 100

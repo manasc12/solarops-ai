@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "solarops-ai"
+version = "0.1.0"
+description = "SolarOps AI - Agentic Solar Farm Intelligence Platform"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.27",
+    "pydantic>=2.5",
+    "pydantic-settings>=2.1",
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "scikit-learn>=1.3",
+    "requests>=2.31",
+    "python-dotenv>=1.0",
+    "pyyaml>=6.0",
+]
+
+[project.optional-dependencies]
+ml = ["lightgbm>=4.0"]
+agents = ["langgraph>=0.0.40", "langchain-core>=0.1"]
+frontend = ["streamlit>=1.30", "plotly>=5.18"]
+dev = ["pytest>=7.4", "ruff>=0.1", "mypy>=1.8", "httpx>=0.26"]
+
+[tool.setuptools]
+packages = ["backend", "agents", "ml", "rag", "workflows"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W", "UP", "B"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+warn_unused_ignores = false
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["backend/tests"]
