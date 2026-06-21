@@ -596,7 +596,9 @@ The system simulates a real-world **Solar Operations Control Center AI Assistant
 ---
 
 ## 13. Design Philosophy
-
+- Technology decisions are defined in TECH_STACK.md.
+    - Developers must not introduce new frameworks or Python libraries without updating TECH_STACK.md and documenting the rationale.
+    
 > “Every decision in the system must be traceable, explainable, and grounded in structured data.”
 
 Simplicity is preferred over complexity, as long as modularity and clarity are preserved.
