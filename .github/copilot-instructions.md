@@ -233,8 +233,15 @@ Prioritize:
 - structured reasoning over free-form outputs
 
 ---
+# 15. Which files to refer during development?
+- For architecture and design: refer to `.github/ARCHITECTURE.md`
+- For tech stack and dependencies: refer to `.github/TECH_STACK.md`
+- For coding standards and best practices: refer to `.github/copilot-instructions.md`
+- For task breakdown and project phases: refer to `.github/TASKS.md`
 
-# 15. Golden Rule
+---
+
+# 16. Golden Rule
 
 If you are unsure how to implement something:
 

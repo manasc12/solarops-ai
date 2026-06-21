@@ -79,51 +79,136 @@ You must execute the project in phases:
 - Initialize frontend (Streamlit)
 - Setup configs, logging, environment files
 
-## PHASE 1: DATA SYSTEM
+## PHASE 1: BACKEND API
+- Objective
+   - Develop the FastAPI backend that exposes all platform capabilities and serves as the interface between the UI and AI system.
+
+- Deliverables
+   - FastAPI application
+   - REST API
+   - Service layer
+   - Validation
+   - Error handling
+
+- Tasks
+   - FastAPI Setup
+   - API Structure
+   - Service Layer
+   - Request Validation
+   - Logging
+   - Definition of Done
+
+## PHASE 2: DATA SYSTEM
 - Weather API integration
 - SCADA mock data generator
 - Schema definitions (STRICT adherence to data_schema.md)
 
-## PHASE 2: ML SYSTEM
+## PHASE 3: ML SYSTEM
 - Feature engineering pipeline
 - Forecasting model (LightGBM baseline)
 - Anomaly detection model
 
-## PHASE 3: AGENT SYSTEM
+## PHASE 4: ANOMALY DETECTION
+- Anomaly Detection Model
+   - Implement Isolation Forest
+   - Detect deviation between:
+   - predicted vs actual output
+- ✔ Output:
+   - Anomaly score per farm
+
+- Anomaly Service Layer
+   - Expose anomaly detection via backend service
+   - Define severity levels:
+      - LOW
+      - MEDIUM
+      - HIGH
+- ✔ Output:
+   - Structured anomaly response
+
+## PHASE 5: AGENT SYSTEM
 - Implement individual agents:
   - Weather Agent
   - Forecast Agent
   - Anomaly Agent
   - RCA Agent (LLM-based reasoning)
 
-## PHASE 4: ORCHESTRATION
+## PHASE 6: ORCHESTRATION
 - Build LangGraph state machine
 - Define SystemState schema usage
 - Implement conditional routing (RCA triggers)
 
-## PHASE 5: RAG SYSTEM
+## PHASE 7: RAG SYSTEM
 - Document ingestion
 - Embedding pipeline
 - Retrieval + QA system
 
-## PHASE 6: HUMAN-IN-THE-LOOP
+## PHASE 8: HUMAN-IN-THE-LOOP
 - Approval workflow system
 - API endpoints for approvals
 - Blocking logic inside graph
 
-## PHASE 7: STREAMLIT FRONTEND
+## PHASE 9: STREAMLIT FRONTEND
 - Dashboard
 - Forecast visualization
 - Anomaly display
 - RCA explanation panel
 - Approval queue UI
 
-## PHASE 8: INTEGRATION
+## PHASE 10: INTEGRATION
 - Connect all systems end-to-end
 - Validate data contracts
 - Ensure full pipeline execution
 
-## PHASE 9: POLISH
+## PHASE 11: TESTING
+- Objective
+   - Ensure reliability and correctness of the platform.
+
+- Deliverables
+   - Unit tests
+   - Integration tests
+   - End-to-end tests
+
+- Tasks
+   - Backend tests
+   - ML tests
+   - Agents tests
+   - UI tests
+   - Definition of Done
+      - All critical functionality of Backend, ML, Agents, UI or Streamlit Frontend should be covered by tests
+
+## PHASE 12 — DEPLOYMENT
+- Objective
+   - Prepare the platform for production deployment.
+
+- Deliverables
+   - Docker containers
+   - Infrastructure
+   - CI/CD
+
+- Tasks
+   - Containers
+      - Backend Dockerfile
+      - Streamlit Dockerfile
+      - Docker Compose
+   - Infrastructure
+      - Kubernetes manifests
+      - Terraform configuration
+      - Nginx configuration
+   - CI/CD
+      - Linting
+      - Testing
+      - Build pipeline
+      - Deployment pipeline
+   - Monitoring
+      - Logging
+      - Metrics
+      - Health checks
+   - Definition of Done
+      - Application deploys successfully using Docker Compose
+      - CI pipeline passes
+      - System health checks operational
+
+## PHASE 13: POLISH
 - Logging
 - Error handling
 - Type safety

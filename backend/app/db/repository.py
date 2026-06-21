@@ -37,7 +37,7 @@ class FarmRepository:
         if not _CONFIG_PATH.exists():
             return
         data = yaml.safe_load(_CONFIG_PATH.read_text(encoding="utf-8")) or {}
-        pprint(data)
+        pprint(data) # TO-DO: remove this
         for entry in data.get("farms", []):
             farm = FarmMetadata(**entry)
             self._store.put(tables.FARMS, farm.farm_id, farm)
@@ -135,7 +135,7 @@ class ReportRepository:
     def get(self, farm_id: str) -> str | None:
         return self._store.get(tables.REPORTS, farm_id)
 
-if __name__ == "__main__":
+if __name__ == "__main__": # TO_DO: remove this test code and add proper unit tests for repositories
     # Quick test to verify repositories can be instantiated and used.
     farm_repo = FarmRepository()
     forecast_repo = ForecastRepository()
