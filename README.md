@@ -1,4 +1,4 @@
-# SolarOps AI — Agentic Solar Farm Intelligence Platform
+# ☀️ SolarOps AI — Agentic Solar Farm Intelligence Platform
 
 A production-grade, modular AI system for operating utility-scale solar farms. It
 forecasts generation, detects performance anomalies, explains their root cause,
@@ -11,7 +11,7 @@ behind human approval — coordinated by a LangGraph multi-agent orchestrator.
 
 ---
 
-## Capabilities
+## 🎯 Capabilities
 
 | Capability | Implementation |
 | --- | --- |
@@ -24,7 +24,7 @@ behind human approval — coordinated by a LangGraph multi-agent orchestrator.
 
 ---
 
-## Architecture
+## 🏗️ Architecture
 
 ```
             +---------------------- Orchestrator (LangGraph) ----------------------+
@@ -57,7 +57,7 @@ See [`docs/agent_design.md`](docs/agent_design.md),
 
 ---
 
-## Quickstart (local, no Docker)
+## 💻 Quickstart (local, no Docker)
 
 Requires Python 3.12+.
 
@@ -102,7 +102,7 @@ make docker-up   # build + run the full stack
 
 ---
 
-## Quickstart (Docker)
+## 🐳 Quickstart (Docker)
 
 ```bash
 docker compose up --build
@@ -114,7 +114,7 @@ Open <http://localhost> (proxy), <http://localhost:8501> (console direct), or
 
 ---
 
-## REST API (`/api/v1`)
+## 🔌 REST API (`/api/v1`)
 
 | Method & path | Purpose |
 | --- | --- |
@@ -142,7 +142,7 @@ curl -s -X POST http://localhost:8000/api/v1/anomaly \
 
 ---
 
-## How anomaly detection works
+## 📊 How anomaly detection works
 
 The system compares **actual SCADA output** against the **weather-expected
 (physics) baseline** at the daytime peak-generation hour — the standard
@@ -164,7 +164,31 @@ Detection is deterministic and wall-clock independent. Severity bands:
 
 ---
 
-## Configuration
+## 📸 Screenshots
+
+### RAG Knowledge Base – Maintenance Q&A
+Query maintenance knowledge with grounded answers and citations from the manual corpus.
+
+![RAG Knowledge](screenshots/rag_knowledge.png)
+
+### Root Cause Analysis – Ranked Causes
+When anomalies are detected, the RCA agent ranks the probable causes with confidence scores.
+
+![RCA Analysis](screenshots/rca_analysis.png)
+
+### Dashboard – Daily Operations Workflow
+Real-time view of farm status, forecast vs actual, anomaly severity, and the full audit trail.
+
+![Operations Dashboard](screenshots/operations_dashboard.png)
+
+### Forecasts – Production Prediction
+Solar generation forecast with confidence bounds for the next 24 hours.
+
+![Forecast View](screenshots/forecast_view.png)
+
+---
+
+## ⚙️ Configuration
 
 Settings load from environment / `.env` (see [`.env.example`](.env.example)).
 Key flags:
@@ -181,7 +205,7 @@ No secrets are ever committed; all credentials come from the environment.
 
 ---
 
-## Testing
+## ✅ Testing
 
 ```bash
 export PYTHONPATH=.
@@ -194,7 +218,7 @@ routing), and the API (endpoint contracts, approval flow).
 
 ---
 
-## Repository layout
+## 📁 Repository layout
 
 ```
 backend/       FastAPI app: api - services - core - db - models - tests
@@ -212,7 +236,7 @@ prompts/       root_cause - optimization
 
 ---
 
-## Design principles
+## 💡 Design principles
 
 - **Modularity & strict layering** — no business/ML/agent logic in routes or UI.
 - **Structured contracts everywhere** — Pydantic v2 schemas; no free-form dicts
