@@ -1,6 +1,26 @@
 # SolarOps AI — local orchestration of the full stack.
 # Backend (FastAPI), Frontend (Streamlit), and an nginx reverse proxy.
 services:
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: chromadb_server
+    ports:
+      - "${CHROMA_PORT}:8000"
+    environment:
+      - CHROMA_PORT=8000
+      - PERSIST_DIRECTORY=/chroma/chroma
+      - IS_PERSISTENT=TRUE
+      - ANONYMIZED_TELEMETRY=FALSE
+      - DEFAULT_STORAGE_PATH_CHROMA_SERVER=/data
+    volumes:
+      - ./chroma_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v2/heartbeat')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
   backend:
     build:
       context: .
@@ -8,8 +28,9 @@ services:
     image: solarops/backend:latest
     environment:
       - APP_ENV=production
-      - LLM_USE_MOCK=true
-      - WEATHER_USE_MOCK=true
+      - LLM_USE_MOCK=false # need to change while running in docker
+      - WEATHER_USE_MOCK=false # need to change while running in docker
+      - CHROMA_HOST=chromadb
     ports:
       - "8000:8000"
     volumes:
@@ -19,6 +40,9 @@ services:
       interval: 15s
       timeout: 5s
       retries: 5
+    depends_on:
+      chromadb:
+        condition: service_healthy
 
   streamlit:
     build:

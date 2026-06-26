@@ -52,7 +52,7 @@
 - mypy
 
 # Documentation
-mkdocs
+- mkdocs
 
 # Containerization
 - Docker

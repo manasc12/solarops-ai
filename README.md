@@ -225,3 +225,5 @@ prompts/       root_cause - optimization
   with a full audit trail.
 - **Never fail silently** — exceptions become structured error responses; agent
   failures are captured in state, not crashes.
+
+> **All projects here are real, deployed, and actively maintained. All the API keys are replaced with placeholders. Built with AI assistance; the designs, decisions, and deployments are mine.**

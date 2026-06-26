@@ -13,7 +13,7 @@ from __future__ import annotations
 from datetime import datetime
 from enum import Enum
 from typing import Any, Optional
-
+from langchain_core.documents import Document
 from pydantic import BaseModel, Field
 
 SCHEMA_VERSION = "v1"
@@ -143,21 +143,11 @@ class ApprovalDecision(BaseModel):
 
 
 # ── 8. RAG ──────────────────────────────────────────────────────────────────
-class DocumentChunk(BaseModel):
-    """A single retrievable chunk of a maintenance document (v1)."""
-
-    doc_id: str
-    chunk_id: str
-    content: str
-    embedding: Optional[list[float]] = None
-    metadata: dict[str, Any] = Field(default_factory=dict)
-
-
 class RAGQueryResult(BaseModel):
     """Result of a grounded RAG query (v1)."""
 
     query: str
-    retrieved_chunks: list[DocumentChunk]
+    retrieved_chunks: list[Document]
     answer: str
     confidence: float = Field(ge=0.0, le=1.0)
 
@@ -221,7 +211,6 @@ __all__ = [
     "RCAResult",
     "ApprovalRequest",
     "ApprovalDecision",
-    "DocumentChunk",
     "RAGQueryResult",
     "ForecastEvaluation",
     "SystemState",

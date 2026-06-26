@@ -5,12 +5,20 @@ from __future__ import annotations
 from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from streamlit import text
 
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
         env_file=".env", env_file_encoding="utf-8", extra="ignore"
     )
+    # ── Chroma (vector database for local development using docker) ───────────────────────────────────────
+    chroma_host: str = "localhost"
+    chroma_port: int = 8000
+    # ──────────── Chroma Cloud (vector database) ──────────────────────────────────────────────────────────
+    chroma_api_key: str = ''
+    chroma_tenant: str = ''
+    chroma_database: str = ''
 
     # Application
     app_name: str = "SolarOps AI"
@@ -40,6 +48,10 @@ class Settings(BaseSettings):
     rag_docs_dir: str = "rag/data/manuals"
     rag_index_dir: str = "data/processed/rag_index"
     rag_top_k: int = 4
+    rag_collection_name: str = "solarops_docs"
+    rag_embedding_model: str = "text-embedding-3-small"
+    chunk_size: int = 600
+    chunk_overlap: int = 100
 
     @property
     def llm_enabled(self) -> bool:
