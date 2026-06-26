@@ -166,25 +166,10 @@ Detection is deterministic and wall-clock independent. Severity bands:
 
 ## 📸 Screenshots
 
-### RAG Knowledge Base – Maintenance Q&A
-Query maintenance knowledge with grounded answers and citations from the manual corpus.
-
-![RAG Knowledge](screenshots/rag_knowledge.png)
-
-### Root Cause Analysis – Ranked Causes
-When anomalies are detected, the RCA agent ranks the probable causes with confidence scores.
-
-![RCA Analysis](screenshots/rca_analysis.png)
-
-### Dashboard – Daily Operations Workflow
-Real-time view of farm status, forecast vs actual, anomaly severity, and the full audit trail.
-
-![Operations Dashboard](screenshots/operations_dashboard.png)
-
-### Forecasts – Production Prediction
-Solar generation forecast with confidence bounds for the next 24 hours.
-
-![Forecast View](screenshots/forecast_view.png)
+| | |
+|---|---|
+| **📚 RAG Knowledge Base – Maintenance Q&A**<br/>Query maintenance knowledge with grounded answers and citations from the manual corpus.<br/><br/>![RAG Knowledge](screenshots/solarops-rag-knowledgebase.png) | **🔍 Root Cause Analysis – Ranked Causes**<br/>When anomalies are detected, the RCA agent ranks the probable causes with confidence scores.<br/><br/>![RCA Analysis](screenshots/solarops-rca.png) |
+| **📊 Dashboard – Daily Operations Workflow**<br/>Real-time view of farm status, forecast vs actual, anomaly severity, and the full audit trail.<br/><br/>![Operations Dashboard](screenshots/solarops-dashboard.png) | **📈 Forecasts – Production Prediction**<br/>Solar generation forecast with confidence bounds for the next 24 hours.<br/><br/>![Forecast View](screenshots/solarops-forecasts.png) |
 
 ---
 
