@@ -387,39 +387,3 @@ class ReportRepository:
             .first()
         )
         return report_model.report_content if report_model else None
-
-    def __init__(self) -> None:
-        self._store = get_store()
-
-    def save_request(self, request: ApprovalRequest) -> None:
-        self._store.put(tables.APPROVAL_REQUESTS, request.request_id, request)
-
-    def get_request(self, request_id: str) -> ApprovalRequest | None:
-        return self._store.get(tables.APPROVAL_REQUESTS, request_id)
-
-    def list_requests(self) -> list[ApprovalRequest]:
-        return self._store.list(tables.APPROVAL_REQUESTS)
-
-    def list_pending(self) -> list[ApprovalRequest]:
-        from backend.app.models.schemas import ApprovalStatus
-
-        return [r for r in self.list_requests() if r.status == ApprovalStatus.PENDING]
-
-    def save_decision(self, decision: ApprovalDecision) -> None:
-        history = self._store.get(tables.APPROVAL_DECISIONS, decision.request_id) or []
-        history.append(decision)
-        self._store.put(tables.APPROVAL_DECISIONS, decision.request_id, history)
-
-    def get_decisions(self, request_id: str) -> list[ApprovalDecision]:
-        return self._store.get(tables.APPROVAL_DECISIONS, request_id) or []
-
-
-class ReportRepository:
-    def __init__(self) -> None:
-        self._store = get_store()
-
-    def save(self, farm_id: str, report: str) -> None:
-        self._store.put(tables.REPORTS, farm_id, report)
-
-    def get(self, farm_id: str) -> str | None:
-        return self._store.get(tables.REPORTS, farm_id)
