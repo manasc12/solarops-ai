@@ -94,7 +94,7 @@ def get_rag_chain() -> RAGChain:
         _chain = RAGChain()
     return _chain
 
-if __name__ == "__main__":
+if __name__ == "__main__": #TODO: remove this test code and add proper unit tests for RAG chain
     # Quick test
     chain = get_rag_chain()
     result = chain.answer("How do I handle a degraded inverter?")

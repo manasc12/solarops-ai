@@ -16,7 +16,7 @@ from backend.app.services.rca_service import get_rca_service
 from rag.generation.rag_chain import get_rag_chain
 
 
-def run_maintenance_flow(farm_id: str) -> RAGQueryResult: #TO-DO: deadcode, this function has not been used anywhere in the project! It has been used in this file only!
+def run_maintenance_flow(farm_id: str) -> RAGQueryResult: #TODO: deadcode, this function has not been used anywhere in the project! It has been used in this file only!
     rca = get_rca_service().analyze(farm_id)
     top_cause = rca.root_causes[0] if rca.root_causes else "equipment underperformance"
     query = f"Recommended maintenance actions for: {top_cause}"

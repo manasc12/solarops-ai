@@ -7,6 +7,7 @@ services:
     ports:
       - "${CHROMA_PORT}:8000"
     environment:
+      - CHROMA_DOCKER=true
       - CHROMA_PORT=8000
       - PERSIST_DIRECTORY=/chroma/chroma
       - IS_PERSISTENT=TRUE
@@ -31,6 +32,7 @@ services:
       - LLM_USE_MOCK=false # need to change while running in docker
       - WEATHER_USE_MOCK=false # need to change while running in docker
       - CHROMA_HOST=chromadb
+      - CHROMA_PORT=8000
     ports:
       - "8000:8000"
     volumes:

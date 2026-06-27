@@ -1,56 +1,59 @@
-"""In-memory data store.
+"""SQLite database configuration and session management.
 
-A lightweight, thread-safe singleton store standing in for PostgreSQL. It keeps
-the system fully runnable with zero external infrastructure while preserving the
-repository abstraction so a real database can be swapped in later.
+Provides thread-safe database connections and ORM session factory.
 """
 
 from __future__ import annotations
 
-import threading
-from collections import defaultdict
-from typing import Any
+import logging
+from pathlib import Path
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, declarative_base, Session
+
+logger = logging.getLogger(__name__)
+
+# Database configuration
+DB_PATH = Path("data/solarops.db")
+DB_URL = f"sqlite:///{DB_PATH.absolute()}"
+
+# Create data directory if it doesn't exist
+DB_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+# SQLAlchemy base for ORM models
+Base = declarative_base()
+
+# Database engine
+_engine = None
 
 
-class InMemoryStore:
-    """Process-wide key/collection store guarded by a lock."""
-
-    def __init__(self) -> None:
-        self._lock = threading.RLock()
-        self._collections: dict[str, dict[str, Any]] = defaultdict(dict)
-
-    def put(self, collection: str, key: str, value: Any) -> None:
-        with self._lock:
-            self._collections[collection][key] = value
-
-    def get(self, collection: str, key: str) -> Any | None:
-        with self._lock:
-            return self._collections[collection].get(key)
-
-    def list(self, collection: str) -> list[Any]:
-        with self._lock:
-            return list(self._collections[collection].values())
-
-    def delete(self, collection: str, key: str) -> None:
-        with self._lock:
-            self._collections[collection].pop(key, None)
-
-    def clear(self, collection: str | None = None) -> None:
-        with self._lock:
-            if collection is None:
-                self._collections.clear()
-            else:
-                self._collections[collection].clear()
+def get_engine():
+    """Get or create the SQLAlchemy engine."""
+    global _engine
+    if _engine is None:
+        _engine = create_engine(
+            DB_URL,
+            connect_args={"check_same_thread": False},  # SQLite allows this in single-process
+            echo=False,  # Set to True for SQL query logging
+        )
+        logger.info(f"Database engine created: {DB_URL}")
+    return _engine
 
 
-_store: InMemoryStore | None = None
-_store_lock = threading.Lock()
+# Session factory
+SessionLocal = sessionmaker(
+    autocommit=False,
+    autoflush=False,
+    bind=get_engine(),
+)
 
 
-def get_store() -> InMemoryStore:
-    global _store
-    if _store is None:
-        with _store_lock:
-            if _store is None:
-                _store = InMemoryStore()
-    return _store
+def get_session() -> Session:
+    """Get a new database session."""
+    return SessionLocal()
+
+
+def init_db() -> None:
+    """Initialize database tables."""
+    Base.metadata.create_all(bind=get_engine())
+    logger.info("Database tables initialized")

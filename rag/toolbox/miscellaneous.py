@@ -4,10 +4,15 @@ def document_id(content: str) -> str:
     payload = content
     return hashlib.sha256(payload.encode("utf-8")).hexdigest()
 
-from langchain_openai import OpenAIEmbeddings
+
 def rag_embedding_function() -> list[float]: 
-    return OpenAIEmbeddings(model=settings.rag_embedding_model,
-                            api_key=settings.openai_api_key)
+    if settings.llm_enabled:
+        from langchain_openai import OpenAIEmbeddings
+        return OpenAIEmbeddings(model=settings.rag_embedding_model,
+                                api_key=settings.openai_api_key)
+    else:
+        from sentence_transformers import SentenceTransformer
+        return SentenceTransformer("all-MiniLM-L6-v2")
 
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 def chunk_text(text: str, size: int, overlap: int) -> list[str]:

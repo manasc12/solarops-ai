@@ -10,14 +10,14 @@ from backend.app.core.config import settings
 from backend.app.core.logging import get_logger, log_event
 from rag.ingestion.load_docs import load_corpus
 from langchain_core.documents import Document
-from rag.toolbox.chroma import SolarOpsChroma
+from rag.toolbox.chroma import SolarOpsChroma, get_solarops_chroma_instance
 
 logger = get_logger("rag.retrieval.retriever")
 
 
 class Retriever:
     def __init__(self) -> None:
-        self._store: SolarOpsChroma = SolarOpsChroma()
+        self._store: SolarOpsChroma = get_solarops_chroma_instance()
 
     def ensure_index(self) -> int:
         if self._store.size > 0:

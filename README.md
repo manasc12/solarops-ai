@@ -61,6 +61,8 @@ See [`docs/agent_design.md`](docs/agent_design.md),
 
 Requires Python 3.12+.
 
+### Unix/Mac (Bash)
+
 ```bash
 # 1. Install dependencies
 pip install -r requirements.txt
@@ -68,8 +70,7 @@ pip install -r requirements.txt
 # 2. (optional) configure - defaults run fully offline with mocks
 cp .env.example .env
 
-# 3. Seed data + build the RAG index, then train models (auto-trains on first
-#    use too, so this step is optional)
+# 3. Seed data + build the RAG index, then train models (auto-trains on first use)
 export PYTHONPATH=.
 bash scripts/load_data.sh
 bash scripts/train_models.sh
@@ -81,15 +82,48 @@ bash scripts/run_backend.sh
 bash scripts/run_streamlit.sh
 ```
 
-On Windows PowerShell, set the path with `$env:PYTHONPATH='.'` and run the
-underlying `python -m ...` commands directly, or use the `make` targets under
-Git Bash / WSL.
+Open the console at <http://localhost:8501> and the API docs at <http://localhost:8000/docs>.
 
-Open the console at <http://localhost:8501> and the API docs at
-<http://localhost:8000/docs>.
+### Windows (PowerShell)
 
-### Make targets
+```powershell
+# 1. Install dependencies
+pip install -r requirements.txt
 
+# 2. (optional) configure - defaults run fully offline with mocks
+Copy-Item .env.example .env
+
+# 3. Seed data + build the RAG index, then train models
+$env:PYTHONPATH = "."
+.\scripts\load_data.ps1
+.\scripts\train_models.ps1
+
+# 4. Run the backend (port 8000)
+.\scripts\run_backend.ps1
+
+# 5. In another shell, run the Streamlit console (port 8501)
+.\scripts\run_streamlit.ps1
+```
+
+Or use the PowerShell task runner (simpler):
+
+```powershell
+# Show all available tasks
+.\build.ps1 help
+
+# Quick setup
+.\build.ps1 install
+.\build.ps1 data
+.\build.ps1 train
+
+# Run services
+.\build.ps1 backend    # Terminal 1: FastAPI on :8000
+.\build.ps1 frontend   # Terminal 2: Streamlit on :8501
+```
+
+### Task Runners (All Platforms)
+
+**Unix/Mac — Make targets:**
 ```bash
 make install     # install dependencies
 make data        # seed farms + build RAG index
@@ -99,6 +133,28 @@ make frontend    # run Streamlit
 make test        # run the test suite
 make docker-up   # build + run the full stack
 ```
+
+**Windows — PowerShell runner:**
+```powershell
+.\build.ps1 install    # install dependencies
+.\build.ps1 data       # seed farms + build RAG index
+.\build.ps1 train      # train forecasting + anomaly models
+.\build.ps1 backend    # run FastAPI
+.\build.ps1 frontend   # run Streamlit
+.\build.ps1 test       # run the test suite
+.\build.ps1 docker-up  # build + run the full stack
+```
+
+**Windows — Batch runner (alternative):**
+```batch
+.\build.bat install    # install dependencies
+.\build.bat data       # seed farms + build RAG index
+.\build.bat train      # train forecasting + anomaly models
+.\build.bat backend    # run FastAPI
+.\build.bat frontend   # run Streamlit
+```
+
+For detailed task runner documentation, see [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md) and [WINDOWS_TASKS.md](WINDOWS_TASKS.md).
 
 ---
 
@@ -114,7 +170,23 @@ Open <http://localhost> (proxy), <http://localhost:8501> (console direct), or
 
 ---
 
-## 🔌 REST API (`/api/v1`)
+## � Documentation & Developer Guides
+
+Complete guides for running and developing SolarOps AI:
+
+| Guide | Purpose | For |
+|-------|---------|-----|
+| **[DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md)** | Complete task runner reference with workflows, environment setup, troubleshooting, and best practices. | All developers |
+| **[WINDOWS_TASKS.md](WINDOWS_TASKS.md)** | Windows-specific task runner guide (PowerShell & Batch alternatives). | Windows developers |
+
+**Quick navigation:**
+- **Unix/Mac**: Use `Makefile` — see [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md#makefile-unixlinuxmac)
+- **Windows (Modern)**: Use `build.ps1` — see [DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md#powershell-runner-windows)
+- **Windows (Legacy)**: Use `build.bat` — see [WINDOWS_TASKS.md](WINDOWS_TASKS.md#2-batch-file-version-alternative)
+
+---
+
+## �🔌 REST API (`/api/v1`)
 
 | Method & path | Purpose |
 | --- | --- |
@@ -175,18 +247,94 @@ Detection is deterministic and wall-clock independent. Severity bands:
 
 ## ⚙️ Configuration
 
-Settings load from environment / `.env` (see [`.env.example`](.env.example)).
-Key flags:
+Settings load from environment / `.env` (see [`.env.example`](.env.example)). Key configuration groups:
 
-| Variable | Default | Effect |
+### Application Settings
+
+| Variable | Default | Purpose |
 | --- | --- | --- |
-| `WEATHER_USE_MOCK` | `true` | Use the deterministic mock weather provider. |
-| `LLM_USE_MOCK` | `true` | Use deterministic template reasoning (no API key needed). |
-| `OPENAI_API_KEY` | _empty_ | If set with `LLM_USE_MOCK=false`, real LLM reasoning is used. |
-| `ANOMALY_THRESHOLD` | `0.6` | RCA trigger / MEDIUM severity threshold. |
-| `BACKEND_URL` | `http://localhost:8000` | Read by the Streamlit API client. |
+| `APP_NAME` | `SolarOps AI` | Application name |
+| `APP_ENV` | `development` | Environment (development/production) |
+| `LOG_LEVEL` | `INFO` | Logging verbosity (DEBUG/INFO/WARNING/ERROR) |
+| `API_HOST` | `0.0.0.0` | Backend API listening host |
+| `API_PORT` | `8000` | Backend API listening port |
+| `BACKEND_URL` | `http://localhost:8000` | Backend URL (read by Streamlit client) |
 
-No secrets are ever committed; all credentials come from the environment.
+### Vector Database (Chroma)
+
+SolarOps AI supports three Chroma deployment modes, selected via environment variables:
+
+| Mode | `CHROMA_DOCKER` | `CHROMA_CLOUD` | Storage | Use Case |
+| --- | --- | --- | --- | --- |
+| **Persistent Local** (default) | `false` | `false` | `chroma_data/` directory | Local development |
+| **Docker Deployment** | `true` | `false` | Docker container (host/port) | Local Docker Chroma instance |
+| **Cloud Deployment** | `false` | `true` | Managed cloud | Production / shared services |
+
+**Configuration variables:**
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `CHROMA_DOCKER` | `false` | Enable local Docker Chroma deployment |
+| `CHROMA_CLOUD` | `false` | Enable Chroma Cloud deployment |
+| `CHROMA_HOST` | `localhost` | Docker deployment hostname (if `CHROMA_DOCKER=true`) |
+| `CHROMA_PORT` | `8000` | Docker deployment port (if `CHROMA_DOCKER=true`) |
+| `CHROMA_API_KEY` | (empty) | Chroma Cloud API key (required if `CHROMA_CLOUD=true`) |
+| `CHROMA_TENANT` | (empty) | Chroma Cloud tenant ID (required if `CHROMA_CLOUD=true`) |
+| `CHROMA_DATABASE` | (empty) | Chroma Cloud database name (required if `CHROMA_CLOUD=true`) |
+
+**⚠️ Important:** Only one mode can be active at a time. Setting both `CHROMA_DOCKER=true` and `CHROMA_CLOUD=true` will raise a configuration error.
+
+### Weather Data
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `WEATHER_USE_MOCK` | `true` | Use deterministic mock weather (no API calls) |
+| `OPEN_METEO_BASE_URL` | `https://api.open-meteo.com/v1/forecast` | Open-Meteo API endpoint |
+| `NASA_POWER_BASE_URL` | `https://power.larc.nasa.gov/api/temporal/daily/point` | NASA POWER API endpoint |
+
+### LLM (Language Model)
+
+| Variable | Purpose |
+| --- | --- |
+| `LLM_USE_MOCK` | Use deterministic template reasoning (`true`) or real LLM (`false`) |
+| `OPENAI_API_KEY` | OpenAI API key (required if `LLM_USE_MOCK=false`) |
+| `OPENAI_MODEL` | LLM model to use (e.g., `gpt-4o-mini`) |
+
+### Machine Learning
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `MODEL_DIR` | `data/processed/models` | Directory for trained model artifacts |
+| `ANOMALY_THRESHOLD` | `0.6` | Anomaly severity threshold for RCA trigger |
+
+### RAG (Retrieval-Augmented Generation)
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `RAG_DOCS_DIR` | `rag/data/manuals` | Path to maintenance manuals |
+| `RAG_INDEX_DIR` | `data/processed/rag_index` | Path to vector index directory |
+| `RAG_TOP_K` | `4` | Number of document chunks to retrieve per query |
+| `RAG_COLLECTION_NAME` | `solarops_docs` | Chroma collection name for embeddings |
+| `RAG_EMBEDDING_MODEL` | `text-embedding-3-small` | OpenAI embedding model |
+| `CHUNK_SIZE` | `600` | RAG document chunk size (characters) |
+| `CHUNK_OVERLAP` | `100` | Chunk overlap for context preservation |
+
+### Setup
+
+Create a `.env` file from the template:
+
+```bash
+cp .env.example .env
+```
+
+Then edit `.env` with your values. **Important:** 
+
+- ✅ Leave `WEATHER_USE_MOCK=true` and `LLM_USE_MOCK=true` for offline/demo mode
+- ✅ No secrets are committed to the repository; all come from environment
+- ⚠️ If using real LLM or cloud Chroma, set the appropriate API keys
+- ✅ Defaults support full offline operation with deterministic fallbacks
+
+No API keys are required to run, test, or demo the system in offline mode.
 
 ---
 

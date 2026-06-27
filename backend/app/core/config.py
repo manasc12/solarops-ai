@@ -13,9 +13,11 @@ class Settings(BaseSettings):
         env_file=".env", env_file_encoding="utf-8", extra="ignore"
     )
     # ── Chroma (vector database for local development using docker) ───────────────────────────────────────
+    chroma_docker: bool = False
     chroma_host: str = "localhost"
     chroma_port: int = 8000
     # ──────────── Chroma Cloud (vector database) ──────────────────────────────────────────────────────────
+    chroma_cloud: bool = False
     chroma_api_key: str = ''
     chroma_tenant: str = ''
     chroma_database: str = ''

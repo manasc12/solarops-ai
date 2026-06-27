@@ -11,7 +11,7 @@ from pathlib import Path
 from langchain_core.documents import Document
 from rag.toolbox.parse_pdf import parse_pdf
 from rag.toolbox.parse_doc import parse_document
-from rag.toolbox.chroma import SolarOpsChroma
+from rag.toolbox.chroma import SolarOpsChroma, get_solarops_chroma_instance
 from backend.app.core.logging import get_logger, log_event
 from rag.toolbox.miscellaneous import document_id
 
@@ -19,7 +19,9 @@ logger = get_logger("rag.ingestion.load_docs")
 
 _SUPPORTED = {".md", ".txt"}
 
-def load_corpus(docs_dir: str, solarOpsChroma: SolarOpsChroma) -> list[str]:
+def load_corpus(docs_dir: str, solarOpsChroma: SolarOpsChroma | None = None) -> list[str]:
+    if solarOpsChroma is None:
+        solarOpsChroma = get_solarops_chroma_instance()
     base = Path(docs_dir)
     if not base.exists():
         log_event(logger, "load_corpus_error", error=f"Directory {docs_dir} does not exist.")

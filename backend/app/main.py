@@ -20,6 +20,7 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from backend.app.api.router import api_router
 from backend.app.core.config import settings
 from backend.app.core.logging import configure_logging, get_logger, log_event
+from backend.app.db.session import init_db
 from backend.app.models.responses import APIResponse
 
 configure_logging()
@@ -29,6 +30,8 @@ logger = get_logger("api.main")
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     log_event(logger, "api_startup", app=settings.app_name, env=settings.app_env)
+    init_db()
+    log_event(logger, "database_initialized")
     yield
     log_event(logger, "api_shutdown", app=settings.app_name)
 
